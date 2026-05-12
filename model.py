@@ -1,26 +1,25 @@
 import torch
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+MODEL_NAME = "all-MiniLM-L6-v2"
 
 def get_device():
     if torch.cuda.is_available():
-        return torch.device("cuda"), "GPU (CUDA/ROCm)"
-    else:
-        return torch.device("cpu"), "CPU (GPU-ready)"
+        return "cuda", "GPU (CUDA)"
+    return "cpu", "CPU"
+
+model = SentenceTransformer(MODEL_NAME, device=get_device()[0])
 
 def compute_score(resume, job_desc):
-    documents = [resume, job_desc]
+    device_name = get_device()[1]
 
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(documents).toarray()
+    resume_embedding = model.encode(resume)
+    jd_embedding = model.encode(job_desc)
 
-    # Get device
-    device, device_name = get_device()
+    score = cosine_similarity(
+        [resume_embedding],
+        [jd_embedding]
+    )[0][0]
 
-    tfidf_tensor = torch.tensor(tfidf_matrix, dtype=torch.float32).to(device)
-
-    score = torch.nn.functional.cosine_similarity(
-        tfidf_tensor[0].unsqueeze(0),
-        tfidf_tensor[1].unsqueeze(0)
-    )
-
-    return score.item(), device_name
+    return score, device_name
