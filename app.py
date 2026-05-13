@@ -125,7 +125,7 @@ if st.button("Analyze Resume", use_container_width=True):
                 job_desc
             )
 
-            final_score = (semantic_score * 100 * 0.75) + (skill_score * 0.25)
+            final_score = (semantic_score * 100 * 0.45) + (skill_score * 0.55)
 
         st.success("Analysis completed successfully")
 
