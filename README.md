@@ -41,8 +41,8 @@ A curated technical keyword taxonomy is used to identify:
 ### 4. Final ATS Scoring
 Final compatibility score is computed using weighted scoring:
 
-- **75% Semantic Match**
-- **25% JD Keyword Match**
+- **45% Semantic Match**
+- **55% JD Keyword Match**
 
 This creates a more realistic ATS-style compatibility score.
 
